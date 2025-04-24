@@ -19,7 +19,6 @@ import { useEffect } from 'react';
 import { checkUserAuth } from '../../services/slices/userSlice';
 import { getIngredients } from '../../services/slices/ingredientsSlice';
 import { useMatch } from 'react-router-dom';
-import { resetOrder } from '../../services/slices/orderSlice';
 
 const App = () => {
   const location = useLocation();
@@ -44,7 +43,7 @@ const App = () => {
   return (
     <div className={styles.app}>
       <AppHeader />
-      <Routes>
+      <Routes location={backgroundLocation || location}>
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
         <Route path='*' element={<NotFound404 />} />
@@ -67,7 +66,7 @@ const App = () => {
         <Route
           path='/forgot-password'
           element={
-            <ProtectedRoute onlyUnAuth>
+            <ProtectedRoute>
               <ForgotPassword />
             </ProtectedRoute>
           }
@@ -75,7 +74,7 @@ const App = () => {
         <Route
           path='/reset-password'
           element={
-            <ProtectedRoute onlyUnAuth>
+            <ProtectedRoute>
               <ResetPassword />
             </ProtectedRoute>
           }
@@ -102,7 +101,7 @@ const App = () => {
           path='/profile/orders/:number'
           element={
             <ProtectedRoute>
-              <ProfileOrders />
+              <OrderInfo />
             </ProtectedRoute>
           }
         />
@@ -117,7 +116,7 @@ const App = () => {
               <Modal
                 title={`#${orderNumber}`}
                 onClose={onClose}
-                children={<OrderInfo />}
+                children={<OrderInfo orderNumber={orderNumber} />}
               />
             }
           />

@@ -3,14 +3,16 @@ import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 import { useAppSelector, useAppDispatch } from '../../services/store';
-import { useParams } from 'react-router-dom';
-import { getOrderByNumber, getOrders } from '../../services/slices/ordersSlice';
+import { useLocation, useParams } from 'react-router-dom';
+import { getOrderByNumber } from '../../services/slices/ordersSlice';
 
-export const OrderInfo: FC = () => {
+interface OrderInfoProps {
+  orderNumber?: string;
+}
+export const OrderInfo: FC<OrderInfoProps> = ({ orderNumber }) => {
   const dispatch = useAppDispatch();
   const { number } = useParams<{ number: string }>();
-  const numberOrderNum = Number(number);
-
+  const numberOrderNum = Number(orderNumber || number);
   /** TODO: взять переменные orderData и ingredients из стора */
   const orderData = useAppSelector((state) => state.ordersSlice.order);
 

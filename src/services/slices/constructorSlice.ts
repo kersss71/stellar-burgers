@@ -19,11 +19,18 @@ const constructorSlice = createSlice({
     setBun(state, action: PayloadAction<TConstructorIngredient>) {
       state.bun = action.payload;
     },
-    addIngredient(state, action: PayloadAction<TIngredient>) {
-      if (action.payload.type === 'bun') {
-        state.bun = action.payload;
-      } else {
-        state.ingredients?.push({ ...action.payload, id: nanoid() });
+    addIngredient: {
+      reducer(state, action: PayloadAction<TConstructorIngredient>) {
+        if (action.payload.type === 'bun') {
+          state.bun = action.payload;
+        } else {
+          state.ingredients?.push(action.payload);
+        }
+      },
+      prepare(ingredient: TIngredient) {
+        return {
+          payload: { ...ingredient, id: nanoid() }
+        };
       }
     },
     removeIngredient(state, action: PayloadAction<string>) {
