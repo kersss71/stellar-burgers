@@ -1,14 +1,18 @@
 import * as orderFixture from '../fixtures/order.json';
 
+const TEST_URL = 'localhost:3000';
+const BUN_INGREDIENT = '[data-cy-ingredient="bun"]';
+const MODALS = '#modals';
+
 describe('E2E тест конструктора бургера', () => {
   beforeEach(() => {
     cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients' });
 
-    cy.visit('localhost:3000');
+    cy.visit(TEST_URL);
   });
 
   it('Список ингредиентов', () => {
-    cy.get('[data-cy-ingredient="bun"]').should('have.length.at.least', 1);
+    cy.get(BUN_INGREDIENT).should('have.length.at.least', 1);
     cy.get('[data-cy-ingredient="main"],[data-cy-ingredient="sauce"]').should(
       'have.length.at.least',
       1
@@ -18,37 +22,37 @@ describe('E2E тест конструктора бургера', () => {
   describe('Проверка работы модальных окон', () => {
     describe('Проверка открытия модальных окон', () => {
       it('открытие по карточке ингредиента', () => {
-        cy.get('[data-cy-ingredient="bun"]:first-of-type').click();
-        cy.get('#modals').children().should('have.length', 2);
+        cy.get(`${BUN_INGREDIENT}:first-of-type`).click();
+        cy.get(MODALS).children().should('have.length', 2);
       });
 
       it('При перезагрузке', () => {
-        cy.get('[data-cy-ingredient="bun"]:first-of-type').click();
+        cy.get(`${BUN_INGREDIENT}:first-of-type`).click();
         cy.reload(true);
-        cy.get('#modals').children().should('have.length', 2);
+        cy.get(MODALS).children().should('have.length', 2);
       });
     });
 
     describe('Проверка закрытия модальных окон', () => {
       it('Через крестик', () => {
-        cy.get('[data-cy-ingredient="bun"]:first-of-type').click();
-        cy.get('#modals button:first-of-type').click();
+        cy.get(`${BUN_INGREDIENT}:first-of-type`).click();
+        cy.get(`${MODALS} button:first-of-type`).click();
         cy.wait(500);
-        cy.get('#modals').children().should('have.length', 0);
+        cy.get(MODALS).children().should('have.length', 0);
       });
 
       it('Через оверлей', () => {
-        cy.get('[data-cy-ingredient="bun"]:first-of-type').click();
-        cy.get('#modals>div:nth-of-type(2)').click({ force: true });
+        cy.get(`${BUN_INGREDIENT}:first-of-type`).click();
+        cy.get(`${MODALS}>div:nth-of-type(2)`).click({ force: true });
         cy.wait(500);
-        cy.get('#modals').children().should('have.length', 0);
+        cy.get(MODALS).children().should('have.length', 0);
       });
 
       it('Через esc', () => {
-        cy.get('[data-cy-ingredient="bun"]:first-of-type').click();
+        cy.get(`${BUN_INGREDIENT}:first-of-type`).click();
         cy.get('body').type('{esc}');
         cy.wait(500);
-        cy.get('#modals').children().should('have.length', 0);
+        cy.get(MODALS).children().should('have.length', 0);
       });
     });
   });
@@ -62,23 +66,23 @@ describe('E2E тест конструктора бургера', () => {
       cy.intercept('POST', 'api/orders', { fixture: 'order' });
       cy.intercept('GET', 'api/ingredients', { fixture: 'ingredients' });
 
-      cy.visit('localhost:3000');
+      cy.visit(TEST_URL);
     });
 
     it('Базовая процедура оформления', () => {
-      cy.get('[data-cy-ingredient="bun"] button').click();
+      cy.get(`${BUN_INGREDIENT} button`).click();
       cy.get('[data-cy-order-button]').click();
 
-      cy.get('#modals').children().should('have.length', 2);
+      cy.get(MODALS).children().should('have.length', 2);
 
-      cy.get('#modals h2:first-of-type').should(
+      cy.get(`${MODALS} h2:first-of-type`).should(
         'have.text',
         orderFixture.order.number
       );
 
-      cy.get('#modals button:first-of-type').click();
+      cy.get(`${MODALS} button:first-of-type`).click();
       cy.wait(500);
-      cy.get('#modals').children().should('have.length', 0);
+      cy.get(MODALS).children().should('have.length', 0);
     });
 
     afterEach(() => {
