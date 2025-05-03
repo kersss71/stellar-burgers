@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { TOrder } from '@utils-types';
-import { getOrdersApi, getOrderByNumberApi } from '@api';
+import { getOrdersApi, getOrderByNumberApi } from '../../utils/burger-api';
 
 interface TOrdersState {
   orders: TOrder[];
@@ -48,6 +48,7 @@ export const ordersSlice = createSlice({
         (state, action: PayloadAction<TOrder[]>) => {
           state.isLoading = false;
           state.orders = action.payload;
+          console.log('orders', action.payload); //
         }
       )
       .addCase(getOrders.rejected, (state, action) => {
@@ -64,6 +65,7 @@ export const ordersSlice = createSlice({
           state.isLoading = false;
           if (action.payload) {
             state.order = action.payload;
+            console.log('order', action.payload); //
           } else {
             state.error = 'Заказ не найден';
           }
